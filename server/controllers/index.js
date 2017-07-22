@@ -1,15 +1,43 @@
 var models = require('../models');
+var bluebird = require('bluebird');
 
+var userFields = ['username'];
+var messageFields = ['message', 'username', 'roomname'];
 module.exports = {
   messages: {
-    get: function (req, res) {}, // a function which handles a get request for all messages
-    post: function (req, res) {} // a function which handles posting a message to the database
+    //id, text, username, roomname
+    get: function (callback) {
+      var queryStr = 'select messages.id, messages.text, messages.roomname from messages \
+        left outer join users on (messages.userid = users.id) \
+        order by messages.id desc';
+      db.query(queryStr, function(err, results) {
+        callback(results);
+      });
+    },
+    post: function (params, callback) {
+      var queryStr = 'insert into messages(text, userid, roomname) \
+        values (?, (select id from users where username = ? limit 1), ?)';
+      db.query(queryStr, params, function(err, results) {
+        callback(results);
+      });
+    }
   },
 
   users: {
     // Ditto as above
-    get: function (req, res) {},
-    post: function (req, res) {}
+    get: function (callback) {
+      //fetch all users
+      var queryStr = 'select * from users';
+      db.query(queryStr, function(err, results) {
+        callback(results);
+      });
+    },
+    post: function (params, callback) {
+      var queryStr = 'insert into users(username) values (?)';
+      db.query(queryStr, params, function(err, results) {
+        callback(results);
+      });
+    }
   }
 };
 

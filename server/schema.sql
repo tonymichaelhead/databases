@@ -20,22 +20,20 @@ USE chat;
 
 -- DROP TABLE IF EXISTS messages;
 		
-CREATE TABLE users (
-  userid INT AUTO_INCREMENT NOT NULL,
-  username INT NULL,
-  PRIMARY KEY (userid)
-);
 
 CREATE TABLE messages (
-  id INT AUTO_INCREMENT NOT NULL,
-  messageid INT NULL,
-  userid INT NULL,
-  roomid INT NULL,
-  message INT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (userid) REFERENCES users (userid)
+  id INT NOT NULL AUTO_INCREMENT,
+  userid INT NOT NULL,
+  text VARCHAR(200) NOT NULL,
+  roomname VARCHAR(20),
+  PRIMARY KEY (id)
 );
 
+CREATE TABLE users (
+  id INT NOT NULL AUTO_INCREMENT,
+  username VARCHAR(40) NOT NULL,
+  PRIMARY KEY (id)
+);
 -- ---
 -- Table 'users'
 -- 
