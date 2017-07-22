@@ -25,7 +25,7 @@ CREATE TABLE users (
   username INT NULL,
   PRIMARY KEY (userid)
 );
-		
+
 CREATE TABLE messages (
   id INT AUTO_INCREMENT NOT NULL,
   messageid INT NULL,
