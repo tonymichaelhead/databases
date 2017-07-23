@@ -3,40 +3,48 @@ var bluebird = require('bluebird');
 
 var userFields = ['username'];
 var messageFields = ['message', 'username', 'roomname'];
+
 module.exports = {
   messages: {
-    //id, text, username, roomname
-    get: function (callback) {
-      var queryStr = 'select messages.id, messages.text, messages.roomname from messages \
-        left outer join users on (messages.userid = users.id) \
-        order by messages.id desc';
-      db.query(queryStr, function(err, results) {
-        callback(results);
-      });
+    get: function (req, res) {
+      
+      Message.findAll({ include: [User]})
+        .complete(function(err, results) {
+          //TODO handle error 
+          res.json(results);
+        })
     },
-    post: function (params, callback) {
-      var queryStr = 'insert into messages(text, userid, roomname) \
-        values (?, (select id from users where username = ? limit 1), ?)';
-      db.query(queryStr, params, function(err, results) {
-        callback(results);
-      });
+    post: function (req, res) {
+      var params = {
+        text: req.body[text], 
+        username: req.body[username], 
+        roomname: req.body[roomname]
+      };
+      message.create(params)
+        .complete(function(err, results) {
+          res.sendStatus(201);
+        })
     }
   },
 
-  users: {
-    // Ditto as above
-    get: function (callback) {
-      //fetch all users
-      var queryStr = 'select * from users';
-      db.query(queryStr, function(err, results) {
-        callback(results);
-      });
+  users: { 
+    get: function (req, res) {
+      User.findAll()
+        .complete(function(err, results) {
+          //TODO handle error 
+          res.json(results);
+        });
     },
-    post: function (params, callback) {
-      var queryStr = 'insert into users(username) values (?)';
-      db.query(queryStr, params, function(err, results) {
-        callback(results);
-      });
+    post: function (req, res) {
+      var params = {
+        text: req.body[text], 
+        username: req.body[username], 
+        roomname: req.body[roomname]
+      };
+      User.create({username: req.body[username]})
+        .complete(function(err, results) {
+          res.sendStatus(201);
+        })
     }
   }
 };
